@@ -13,9 +13,11 @@ class LoginScreenViewController: UITableViewController {
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
     @IBOutlet weak var loginBtn: UIButton!
+    @IBOutlet weak var loadingSpinner: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadingSpinner.isHidden = true
     }
     
     @IBAction func onLoginBtnClick(_ sender: UIButton) {
@@ -35,8 +37,14 @@ class LoginScreenViewController: UITableViewController {
         }
         
         let loginModel = LoginRequestModel(userName: email, password: password, SoftwareType: "AN", ReleaseVersion: "049")
+        loginBtn.isEnabled = false
         
+        loadingSpinner.isHidden = false
         APIManager.shared.loginUser(loginModel: loginModel) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.loginBtn.isEnabled = true
+                self?.loadingSpinner.isHidden = true
+            }
             switch result{
             case .success(let response):
                 self?.handleSuccess(response: response)

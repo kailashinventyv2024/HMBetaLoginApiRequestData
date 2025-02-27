@@ -73,6 +73,9 @@
                                                         <action selector="onLoginBtnClick:" destination="JSz-fQ-fmP" eventType="touchUpInside" id="FFg-E3-MtW"/>
                                                     </connections>
                                                 </button>
+                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="H8i-Gd-CYy">
+                                                    <rect key="frame" x="186.66666666666666" y="379.33333333333331" width="20" height="20"/>
+                                                </activityIndicatorView>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="B7U-ek-96k" firstAttribute="top" secondItem="Pv3-EQ-4dY" secondAttribute="top" constant="50" id="07K-jQ-GlD"/>
@@ -91,7 +94,9 @@
                                                 <constraint firstItem="Alx-pg-NHZ" firstAttribute="top" secondItem="L3C-S2-xrx" secondAttribute="bottom" constant="35" id="gw1-pa-kbt"/>
                                                 <constraint firstItem="jka-SU-wEm" firstAttribute="top" secondItem="B7U-ek-96k" secondAttribute="bottom" constant="30" id="hAS-IB-RuB"/>
                                                 <constraint firstItem="qgR-AA-2TM" firstAttribute="top" secondItem="ZX3-uU-Mw8" secondAttribute="bottom" constant="25" id="n8v-KW-IMc"/>
+                                                <constraint firstItem="H8i-Gd-CYy" firstAttribute="top" secondItem="Alx-pg-NHZ" secondAttribute="bottom" constant="-33" id="of0-GA-MJV"/>
                                                 <constraint firstItem="qgR-AA-2TM" firstAttribute="trailing" secondItem="jka-SU-wEm" secondAttribute="trailing" id="r7H-9d-4zW"/>
+                                                <constraint firstItem="H8i-Gd-CYy" firstAttribute="centerX" secondItem="Pv3-EQ-4dY" secondAttribute="centerX" id="rM9-W6-kh4"/>
                                                 <constraint firstItem="Alx-pg-NHZ" firstAttribute="leading" secondItem="L3C-S2-xrx" secondAttribute="leading" id="y8G-zA-puA"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -107,6 +112,7 @@
                     <navigationItem key="navigationItem" id="890-lq-XfX"/>
                     <connections>
                         <outlet property="emailField" destination="ZX3-uU-Mw8" id="iih-aI-TAl"/>
+                        <outlet property="loadingSpinner" destination="H8i-Gd-CYy" id="3ya-LK-6Su"/>
                         <outlet property="loginBtn" destination="Alx-pg-NHZ" id="YQF-Rx-7TI"/>
                         <outlet property="passwordField" destination="L3C-S2-xrx" id="uc9-i5-7zL"/>
                     </connections>
@@ -285,6 +291,7 @@
                         <outlet property="genderBtn" destination="jIV-ac-3Lw" id="iKs-uT-LMl"/>
                         <outlet property="heightTextField" destination="TMT-b3-J6g" id="6U8-GA-ibY"/>
                         <outlet property="lastNameTextField" destination="9oc-6k-Fkp" id="vuH-lJ-Vse"/>
+                        <outlet property="saveBtn" destination="pUh-Nq-mFR" id="UcS-iS-3O0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hwq-Sw-Y2Z" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

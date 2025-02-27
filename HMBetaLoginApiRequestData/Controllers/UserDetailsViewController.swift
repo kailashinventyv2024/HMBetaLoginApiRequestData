@@ -14,6 +14,9 @@ class UserDetailsViewController: UIViewController {
     @IBOutlet weak var genderBtn: UIButton!
     @IBOutlet weak var dateOfBirth: UIDatePicker!
     @IBOutlet weak var heightTextField: UITextField!
+    @IBOutlet weak var saveBtn: UIButton!
+    
+    
     
     var dob: String?
     var firstName: String?
@@ -59,7 +62,6 @@ class UserDetailsViewController: UIViewController {
     }
     
     @IBAction func onSaveBtnClick(_ sender: UIButton) {
-        
         guard let firstName = firstNameTextField.text, !firstName.isEmpty,
               let lastName = lastNameTextField.text, !lastName.isEmpty,
               let gender = genderBtn.titleLabel?.text,
@@ -73,9 +75,22 @@ class UserDetailsViewController: UIViewController {
         
         let userDetails = UserDetails(firstName: firstName, lastName: lastName, gender: gender, dateOfBirth: dobString, height: height)
         
+        saveBtn.titleLabel?.text = "Saving..."
+        
         if DatabaseHelper.shared.insertUser(userDetail: userDetails) {
             print("Success")
+            handleSuccess()
             DatabaseHelper.shared.fetchAllUsers()
+        }
+    }
+    
+    private func handleSuccess(){
+        DispatchQueue.main.async {
+            self.saveBtn.titleLabel?.text = "Save"
+            let alert = UIAlertController(title: "Status", message: "Your data saved successfully", preferredStyle: .alert)
+            let cancelBtn = UIAlertAction(title: "Cancel", style: .cancel)
+            alert.addAction(cancelBtn)
+            self.present(alert, animated: true)
         }
     }
     
