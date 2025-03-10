@@ -10,10 +10,23 @@ import UIKit
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
+    var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        let rootViewController: UIViewController;
+        if let _ = UserDefaults.standard.string(forKey: "email"){
+            rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "UserDetailsViewController") as! UserDetailsViewController
+        }else{
+            rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginScreenViewController") as! LoginScreenViewController
+        }
+        
+        window.rootViewController = UINavigationController(rootViewController: rootViewController)
+        self.window = window
+        self.window?.makeKeyAndVisible()
+        
         return true
     }
 

@@ -6,27 +6,26 @@
 //
 
 import UIKit
-import SQLite3
 
-class LoginScreenViewController: UITableViewController {
+class LoginScreenViewController: UIViewController {
     
-    @IBOutlet weak var emailField: UITextField!
-    @IBOutlet weak var passwordField: UITextField!
-    @IBOutlet weak var loginBtn: UIButton!
-    @IBOutlet weak var loadingSpinner: UIActivityIndicatorView!
+    @IBOutlet weak var txtEmail: UITextField!
+    @IBOutlet weak var txtPassword: UITextField!
+    @IBOutlet weak var btnLogin: UIButton!
+    @IBOutlet weak var spinnerLoading: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadingSpinner.isHidden = true
+        spinnerLoading.isHidden = true
     }
     
-    @IBAction func onLoginBtnClick(_ sender: UIButton) {
-        let email = emailField.text
-        let password = passwordField.text
+    @IBAction func onbtnLoginClick(_ sender: UIButton) {
+        let email = txtEmail.text
+        let password = txtPassword.text
         
-        guard let email = email, let password = password, email.isValidEmail else{
+        guard let email = email, let password = password, email.isValidEmail, !password.isEmpty else{
             DispatchQueue.main.async {
-                let alert = UIAlertController(title: "Status", message: "Enter valid credetials", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Status", message: "Enter valid email and password", preferredStyle: .alert)
                 
                 let cancelBtn = UIAlertAction(title: "Cancel", style: .cancel)
                 alert.addAction(cancelBtn)
@@ -36,48 +35,89 @@ class LoginScreenViewController: UITableViewController {
             return
         }
         
-        let loginModel = LoginRequestModel(userName: email, password: password, SoftwareType: "AN", ReleaseVersion: "049")
-        loginBtn.isEnabled = false
+        let loginModel = LoginRequestModel(
+            userName: email,
+            password: password,
+            SoftwareType: "AN",
+            ReleaseVersion: "049"
+        )
+        btnLogin.isEnabled = false
         
-        loadingSpinner.isHidden = false
+        spinnerLoading.isHidden = false
         APIManager.shared.loginUser(loginModel: loginModel) { [weak self] result in
             DispatchQueue.main.async {
-                self?.loginBtn.isEnabled = true
-                self?.loadingSpinner.isHidden = true
+                self?.btnLogin.isEnabled = true
+                self?.spinnerLoading.isHidden = true
             }
             switch result{
             case .success(let response):
                 self?.handleSuccess(response: response)
             case .failure(let error):
                 print(error)
-                self?.handleFailure()
+                self?.handleFailure(error)
             }
         }
     }
     
     private func handleSuccess(response: LoginResponseModel) {
+        let userDetails = UserDetails(
+            firstName: response.firstName ?? "",
+            email: response.email ?? "",
+            lastName: response.lastName ?? "",
+            gender: response.gender == 1 ? "Male" : "Female",
+            dateOfBirth: response.dob ?? "",
+            height: Double(response.heightCM ?? 0)
+        )
+
+        if DatabaseHelper.shared.fetchByEmailId(email: userDetails.email) == nil {
+            if DatabaseHelper.shared.insertUser(userDetail: userDetails) {
+                UserDefaults.standard.setValue(userDetails.email, forKey: "email")
+            }
+            navigateToUserDetails()
+        } else {
+            let alert = UIAlertController(
+                title: "Message",
+                message: "User already exists. Do you want to override it?",
+                preferredStyle: .alert
+            )
+
+            let cancelBtn = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                UserDefaults.standard.setValue(userDetails.email, forKey: "email")
+                self.navigateToUserDetails()
+            }
+
+            let yesBtn = UIAlertAction(title: "Yes", style: .default) { _ in
+                if DatabaseHelper.shared.updateUser(userDetail: userDetails) {
+                    UserDefaults.standard.setValue(userDetails.email, forKey: "email")
+                }
+                self.navigateToUserDetails()
+            }
+
+            alert.addAction(cancelBtn)
+            alert.addAction(yesBtn)
+            DispatchQueue.main.async {
+                self.present(alert, animated: true)
+            }
+        }
+    }
+
+    private func navigateToUserDetails() {
         DispatchQueue.main.async {
             if let userDetailsViewController = self.storyboard?.instantiateViewController(identifier: "UserDetailsViewController") as? UserDetailsViewController {
                 userDetailsViewController.title = ""
-                userDetailsViewController.firstName = response.firstName
-                userDetailsViewController.lastName = response.lastName
-                let gender = response.gender == 1 ? "Male" : "Female"
-                userDetailsViewController.gender = gender
-                userDetailsViewController.height = Double(response.heightCM ?? 0)
-                userDetailsViewController.dob = response.dob
-
                 self.navigationController?.setViewControllers([userDetailsViewController], animated: true)
             }
         }
     }
+
     
-    private func handleFailure() {
+    
+    private func handleFailure(_ error: Error) {
+        print(error)
         DispatchQueue.main.async {
             let alert = UIAlertController(title: "Status", message: "Login Failed", preferredStyle: .alert)
-            
             let cancelBtn = UIAlertAction(title: "Cancel", style: .cancel)
             alert.addAction(cancelBtn)
-            
             self.present(alert, animated: true)
         }
         

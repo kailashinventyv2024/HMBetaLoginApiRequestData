@@ -7,6 +7,7 @@
 
 struct UserDetails{
     var firstName: String
+    var email: String
     var lastName: String
     var gender: String
     var dateOfBirth: String

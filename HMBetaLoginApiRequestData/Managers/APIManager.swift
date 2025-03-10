@@ -28,7 +28,7 @@ final class APIManager{
     private init(){}
     
     public func loginUser(loginModel: LoginRequestModel, completion: @escaping (Result<LoginResponseModel, Error>) -> Void){
-        guard var request = createRequest(with: URL(string: "Login request URL"), type: .POST) else {
+        guard var request = createRequest(with: URL(string: "<Login API>"), type: .POST) else {
             completion(.failure(APIError.InvalidRequest))
             return
         }
