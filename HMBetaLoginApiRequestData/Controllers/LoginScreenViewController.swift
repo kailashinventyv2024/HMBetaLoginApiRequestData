@@ -105,6 +105,7 @@ class LoginScreenViewController: UIViewController {
         DispatchQueue.main.async {
             if let userDetailsViewController = self.storyboard?.instantiateViewController(identifier: "UserDetailsViewController") as? UserDetailsViewController {
                 userDetailsViewController.title = ""
+                userDetailsViewController.navigationController?.isNavigationBarHidden = true
                 self.navigationController?.setViewControllers([userDetailsViewController], animated: true)
             }
         }
